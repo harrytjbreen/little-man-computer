@@ -1,25 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import IDE from "./components/editor";
+import Container from "./components/styled/Container";
+import useCompileLMC from "./hooks/useCompileLMC";
+import Computer from "./components/computer";
+
+const DEFAULT_VALUE = `//This is the code editor
+//Use this space
+//to write the LMC instructions
+INP
+STA A
+INP
+STA B
+LDA A
+SUB B
+BRP isPositive
+LDA B
+OUT
+HLT
+isPositive LDA A
+HLT
+A DAT 3
+B DAT`;
 
 function App() {
+  const [code, setCode] = useState<string>(DEFAULT_VALUE);
+  const [computerValues, setComputerValues] = useState<string[][]>([]);
+  //TODO make lines state, run useCompile when button clicked
+  const { lines } = useCompileLMC(code);
+
+  const sendToComputer = () => {
+    setComputerValues(lines);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <IDE value={code} update={setCode} />
+      <Computer lines={lines} />
+    </Container>
   );
 }
 
